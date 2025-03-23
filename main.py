@@ -141,8 +141,7 @@ def show_post(post_id):
         db.session.add(comment)
         db.session.commit()
 
-        return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated,
-                               is_admin=is_admin, form=comment_form, comments=comments)
+        return redirect(url_for("show_post", post_id=post_id))
 
     return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated, is_admin=is_admin, form=comment_form, comments=comments)
 
