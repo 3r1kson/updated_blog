@@ -10,7 +10,7 @@
           <h2 class="subheading">{{ post.subtitle }}</h2>
           <span class="meta"
             >Posted by
-            <a href="#">{{ post.author }}</a>
+            <a href="#">{{ post.author.name }}</a>
             on {{ post.date }}
           </span>
         </div>
@@ -26,6 +26,7 @@
       <div class="col-md-10 col-lg-8 col-xl-7">
         {{ post.body|safe }}
 
+        {% if logged_in and is_admin: %}
         <div class="d-flex justify-content-end mb-4">
           <!-- TODO: Editing posts-->
           <a
@@ -34,7 +35,34 @@
             >Edit Post</a
           >
         </div>
+        {% endif %}
+
+        <form method="post">
+          {{ render_form(form) }}
+        </form>
+
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='body') }}
+
+      <div class="comment">
+          <ul class="commentList">
+            <!-- Show all comments -->
+            {% for comment in comments: %}
+            <li>
+              <div class="commenterImage">
+                <img
+                  src="{{ comment.comment_author.email | gravatar }}"
+                />
+              </div>
+              <div class="commentText">
+                {{comment.body|safe}}
+                <span class="sub-text">{{comment.comment_author.name}}</span>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
       </div>
+
     </div>
   </div>
 </article>
