@@ -44,27 +44,28 @@
         {{ ckeditor.load() }}
         {{ ckeditor.config(name='body') }}
 
-      <div class="comment">
-          <ul class="commentList">
-            <!-- Show all comments -->
-            {% for comment in comments: %}
-            <li>
-              <div class="commenterImage">
-                <img
-                  src="{{ comment.comment_author.email | gravatar }}"
-                />
-              </div>
-              <div class="commentText">
-                {{comment.body|safe}}
-                <span class="sub-text">{{comment.comment_author.name}}</span>
-              </div>
-            </li>
-            {% endfor %}
-          </ul>
+        <div class="comment">
+            <ul class="commentList">
+              <!-- Show all comments -->
+              {% for comment in comments: %}
+              <li>
+                <div class="commenterImage">
+                  <img
+                    src="{{ comment.comment_author.email | gravatar }}"
+                  />
+                </div>
+                <div class="commentText">
+                  {{comment.body|safe}}
+                  <span class="sub-text">{{comment.comment_author.name}}</span>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+        </div>
       </div>
-
     </div>
   </div>
 </article>
+
 
 {% include "footer.html" %}
