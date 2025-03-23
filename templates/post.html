@@ -37,16 +37,19 @@
         </div>
         {% endif %}
 
+        {% if logged_in: %}
         <form method="post">
           {{ render_form(form) }}
         </form>
 
         {{ ckeditor.load() }}
         {{ ckeditor.config(name='body') }}
+        {% endif %}
 
         <div class="comment">
             <ul class="commentList">
               <!-- Show all comments -->
+              <p><b>Comments</b></p>
               {% for comment in comments: %}
               <li>
                 <div class="commenterImage">

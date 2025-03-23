@@ -1,6 +1,8 @@
+import os
 from logging import raiseExceptions
 
 import flask_login
+from dotenv import load_dotenv
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from functools import wraps
 from flask_bootstrap import Bootstrap5
@@ -15,7 +17,6 @@ from wtforms.validators import DataRequired, URL
 from flask_ckeditor import CKEditor, CKEditorField
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from datetime import date
-
 from forms import NewPost, RegisterForm, LoginForm, CommentForm
 
 '''
@@ -31,8 +32,10 @@ pip3 install -r requirements.txt
 This will install the packages from the requirements.txt for this project.
 '''
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 Bootstrap5(app)
 login_manager = LoginManager()
 login_manager.login_view = 'login'
@@ -43,7 +46,9 @@ ckeditor = CKEditor(app)
 # CREATE DATABASE
 class Base(DeclarativeBase):
     pass
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
@@ -125,7 +130,9 @@ def get_all_posts():
 @app.route('/<post_id>', methods=['GET', 'POST'])
 def show_post(post_id):
     # TODO: Retrieve a BlogPost from the database based on the post_id
-    is_admin = flask_login.current_user.id == 1
+    is_admin = False
+    if current_user.is_authenticated:
+        is_admin = flask_login.current_user.id == 1
     requested_post = db.get_or_404(BlogPost, int(post_id))
     comments = Comment.query.filter_by(post_id=int(post_id)).all()
     comment_form = CommentForm()
